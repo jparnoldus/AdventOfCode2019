@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AdventOfCode2019.challenge
@@ -7,73 +8,66 @@ namespace AdventOfCode2019.challenge
     {
         public static string Solve1()
         {
-            List<int> input = new List<int>();
-            GetInputAsStringList(2).First().Split(',').ToList().ForEach(i => input.Add(int.Parse(i)));
+            List<int> input = GetInputAsCsIntListList(2).First();
+            Array.ForEach<int>(input.ToArray(), i => { 
+                input[1] = 12; 
+                input[2] = 2; 
+            });
 
-            input[1] = 12;
-            input[2] = 2;
 
             int offset = 0;
-            while (true) 
+            while (input[offset] != 99) 
             {
-                if (input[offset] == 1)
+                switch (input[offset]) 
                 {
-                    input[input[offset + 3]] = input[input[offset + 1]] + input[input[offset + 2]];
+                    case 1:
+                        input[input[offset + 3]] = input[input[offset + 1]] + input[input[offset + 2]];
+                        break;
+                    case 2:
+                        input[input[offset + 3]] = input[input[offset + 1]] * input[input[offset + 2]];
+                        break;
                 }
-                else if (input[offset] == 2)
-                {
-                    input[input[offset + 3]] = input[input[offset + 1]] * input[input[offset + 2]];
-                }
-                else if (input[offset] == 99) 
-                {
-                    break;
-                }
-
                 offset += 4;
             }
 
-            return input[0].ToString();
+            return input.First().ToString();
         }
 
         public static string Solve2()
         {
-            for (int i = 0; i < 100; i++)
-            {
-                for (int j = 0; j < 100; j++)
-                {
-                    List<int> input = new List<int>();
-                    GetInputAsStringList(2).First().Split(',').ToList().ForEach(i => input.Add(int.Parse(i)));
-
-                    input[1] = i;
-                    input[2] = j;
+            int answer = 0;
+            Enumerable.Range(0, 99).ToList().ForEach(noun => { 
+                Enumerable.Range(0, 99).ToList().ForEach(verb => {
+                    List<int> input = GetInputAsCsIntListList(2).First();
+                    Array.ForEach<int>(input.ToArray(), i => {
+                        input[1] = noun;
+                        input[2] = verb;
+                    });
 
                     int offset = 0;
-                    while (true)
+                    while (input[offset] != 99)
                     {
-                        if (input[offset] == 1)
+                        switch (input[offset])
                         {
-                            input[input[offset + 3]] = input[input[offset + 1]] + input[input[offset + 2]];
+                            case 1:
+                                input[input[offset + 3]] = input[input[offset + 1]] + input[input[offset + 2]];
+                                break;
+                            case 2:
+                                input[input[offset + 3]] = input[input[offset + 1]] * input[input[offset + 2]];
+                                break;
                         }
-                        else if (input[offset] == 2)
-                        {
-                            input[input[offset + 3]] = input[input[offset + 1]] * input[input[offset + 2]];
-                        }
-                        else if (input[offset] == 99)
-                        {
-                            break;
-                        }
-
                         offset += 4;
                     }
 
                     if (input[0] == 19690720)
                     {
-                        return (100 * i + j).ToString();
+                        answer = 100 * noun + verb;
+                        return;
                     }
-                }
-            }
+                }); 
+            });
 
-            return "";
+            return answer.ToString();
         }
     }
 }
