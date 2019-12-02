@@ -14,20 +14,11 @@ namespace AdventOfCode2019.challenge
                 input[2] = 2; 
             });
 
-
-            int offset = 0;
-            while (input[offset] != 99) 
+            for (int offset = 0; input[offset] != 99; offset += 4)
             {
-                switch (input[offset]) 
-                {
-                    case 1:
-                        input[input[offset + 3]] = input[input[offset + 1]] + input[input[offset + 2]];
-                        break;
-                    case 2:
-                        input[input[offset + 3]] = input[input[offset + 1]] * input[input[offset + 2]];
-                        break;
-                }
-                offset += 4;
+                input[input[offset + 3]] = input[offset] == 1 ? 
+                    input[input[offset + 1]] + input[input[offset + 2]] : input[offset] == 2 ? 
+                        input[input[offset + 1]] * input[input[offset + 2]] : input[input[offset + 3]];
             }
 
             return input.First().ToString();
@@ -44,26 +35,14 @@ namespace AdventOfCode2019.challenge
                         input[2] = verb;
                     });
 
-                    int offset = 0;
-                    while (input[offset] != 99)
+                    for (int offset = 0; input[offset] != 99; offset += 4)
                     {
-                        switch (input[offset])
-                        {
-                            case 1:
-                                input[input[offset + 3]] = input[input[offset + 1]] + input[input[offset + 2]];
-                                break;
-                            case 2:
-                                input[input[offset + 3]] = input[input[offset + 1]] * input[input[offset + 2]];
-                                break;
-                        }
-                        offset += 4;
+                        input[input[offset + 3]] = input[offset] == 1 ?
+                            input[input[offset + 1]] + input[input[offset + 2]] : input[offset] == 2 ?
+                                input[input[offset + 1]] * input[input[offset + 2]] : input[input[offset + 3]];
                     }
 
-                    if (input[0] == 19690720)
-                    {
-                        answer = 100 * noun + verb;
-                        return;
-                    }
+                    _ = input.First().Equals(19690720) ? answer = 100 * noun + verb : 0;
                 }); 
             });
 
