@@ -77,5 +77,27 @@ namespace AdventOfCode2019.challenge
 
             return list;
         }
+
+        public static List<List<string>> GetInputAsCsStringListList(int day)
+        {
+            List<List<string>> list = new List<List<string>>();
+
+            try
+            {
+                using (StreamReader sr = new StreamReader(GetPath(day)))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        list.Add(sr.ReadLine().Split(',').ToList());
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            return list;
+        }
     }
 }
