@@ -36,10 +36,7 @@ namespace AdventOfCode2019.challenge
                 index++;
             });
 
-            List<Point> intersections = locations[0].Intersect(locations[1]).Except(new List<Point>() { new Point(0, 0) }).ToList();
-            intersections.ForEach(i => i.manhatten = Math.Abs(i.x) + Math.Abs(i.y));
-
-            return intersections.Min(i => i.manhatten).ToString();
+            return locations[0].Intersect(locations[1]).Except(new List<Point>() { new Point(0, 0) }).ToList().Min(i => Math.Abs(i.x) + Math.Abs(i.y)).ToString();
         }
 
         public static string Solve2()
@@ -72,18 +69,7 @@ namespace AdventOfCode2019.challenge
                 index++;
             });
 
-            List<Point> intersections = new List<Point>();
-            locations[0].Intersect(locations[1]).Except(new List<Point>() { new Point(0, 0) }).ToList().ForEach(i =>
-            {
-                locations[1].Intersect(locations[0]).Except(new List<Point>() { new Point(0, 0) }).ToList().ForEach(j =>
-                {
-                    if (i.Equals(j)) {
-                        intersections.Add(new Point(i.x, i.y, i.steps + j.steps));
-                    }
-                });
-            });
-
-            return intersections.Min(i => i.steps).ToString();
+            return locations[0].Intersect(locations[1]).Concat(locations[1].Intersect(locations[0])).GroupBy(i => new { i.x, i.y }).Select(i => new Point(i.First().x, i.First().y, i.Sum(x => x.steps))).Except(new List<Point>() { new Point(0, 0) }).Min(i => i.steps).ToString();
         }
     }
 
@@ -91,7 +77,6 @@ namespace AdventOfCode2019.challenge
     {
         public int x;
         public int y;
-        public int manhatten;
         public int steps;
 
         public Point(int x, int y)
