@@ -71,41 +71,41 @@ namespace AdventOfCode2019.challenge
 
             return locations[0].Intersect(locations[1]).Concat(locations[1].Intersect(locations[0])).GroupBy(i => new { i.x, i.y }).Select(i => new Point(i.First().x, i.First().y, i.Sum(x => x.steps))).Except(new List<Point>() { new Point(0, 0) }).Min(i => i.steps).ToString();
         }
-    }
 
-    public class Point
-    {
-        public int x;
-        public int y;
-        public int steps;
-
-        public Point(int x, int y)
+        public class Point
         {
-            this.x = x;
-            this.y = y;
-        }
+            public int x;
+            public int y;
+            public int steps;
 
-        public Point(int x, int y, int steps)
-        {
-            this.x = x;
-            this.y = y;
-            this.steps = steps;
-        }
+            public Point(int x, int y)
+            {
+                this.x = x;
+                this.y = y;
+            }
 
-        public Point Clone()
-        {
-            return new Point(this.x, this.y);
-        }
+            public Point(int x, int y, int steps)
+            {
+                this.x = x;
+                this.y = y;
+                this.steps = steps;
+            }
 
-        public override int GetHashCode()
-        {
-            return (this.x + this.y).GetHashCode();
-        }
+            public Point Clone()
+            {
+                return new Point(this.x, this.y);
+            }
 
-        public override bool Equals(object obj)
-        {
-            Point other = obj as Point;
-            return other != null && (other.x == this.x && other.y == this.y);
+            public override int GetHashCode()
+            {
+                return (this.x + this.y).GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                Point other = obj as Point;
+                return other != null && (other.x == this.x && other.y == this.y);
+            }
         }
     }
 }
