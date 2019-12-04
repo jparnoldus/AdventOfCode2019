@@ -9,70 +9,12 @@ namespace AdventOfCode2019.challenge
     {
         public static string Solve1()
         {
-            var possibilities = Enumerable.Range(1, 9).Select(i => i.ToString() + i.ToString());
-
-            var input = GetInputAsStringList(4).First().Split('-');
-            int start = int.Parse(input[0]);
-            int end = int.Parse(input[1]);
-
-            int total = 0;
-            for (int i = start; i < end; i++) {
-                string stringVersion = i.ToString();
-                if (possibilities.Any(w => stringVersion.Contains(w))) {
-
-                    bool ok = true;
-                    for (int j = 1; j < stringVersion.Length; j++) {
-                        if (stringVersion[j] < stringVersion[j - 1]) {
-                            ok = false;
-                        }
-                    }
-
-                    if (!ok) {
-                        continue;
-                    }
-
-                    total++;
-                }
-            }
-
-            return total.ToString();
+            return Enumerable.Range(int.Parse(GetInputAsStringList(4).First().Substring(0, 6)), int.Parse(GetInputAsStringList(4).First().Substring(7, 6)) - int.Parse(GetInputAsStringList(4).First().Substring(0, 6))).Where(n => n.ToString().Skip(1).Zip(n.ToString(), (c, p) => new { c, p }).All(i => i.c >= i.p)).Count(n => Enumerable.Range(1, 9).Select(i => i.ToString() + i.ToString()).Any(w => n.ToString().Contains(w))).ToString();
         }
 
         public static string Solve2()
         {
-            var possibilities = Enumerable.Range(1111, 9999).Select(i => i.ToString()).Where(i => i[0] != i[1] && i[3] != i[1] && i[1] == i[2]);
-
-            var input = GetInputAsStringList(4).First().Split('-');
-            int start = int.Parse(input[0]);
-            int end = int.Parse(input[1]);
-
-            int total = 0;
-            for (int i = start; i < end; i++)
-            {
-                string stringVersion = i.ToString();
-                if (possibilities.Any(w => stringVersion.Contains(w) || stringVersion.StartsWith(w.Substring(1)) || stringVersion.EndsWith(w.Substring(0, 3))))
-                {
-
-                    bool ok = true;
-                    for (int j = 1; j < stringVersion.Length; j++)
-                    {
-                        if (stringVersion[j] < stringVersion[j - 1])
-                        {
-                            ok = false;
-                        }
-                    }
-
-                    if (!ok)
-                    {
-                        continue;
-                    }
-
-                    Console.WriteLine(i.ToString());
-                    total++;
-                }
-            }
-
-            return total.ToString();
+            return Enumerable.Range(int.Parse(GetInputAsStringList(4).First().Substring(0, 6)), int.Parse(GetInputAsStringList(4).First().Substring(7, 6)) - int.Parse(GetInputAsStringList(4).First().Substring(0, 6))).Where(n => n.ToString().Skip(1).Zip(n.ToString(), (c, p) => new { c, p }).All(i => i.c >= i.p)).Count(n => Enumerable.Range(1111, 9999).Select(i => i.ToString()).Where(i => i[0] != i[1] && i[3] != i[1] && i[1] == i[2]).Any(w => n.ToString().Contains(w) || n.ToString().StartsWith(w.Substring(1)) || n.ToString().EndsWith(w.Substring(0, 3)))).ToString();
         }
     }
 }
