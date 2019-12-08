@@ -99,5 +99,27 @@ namespace AdventOfCode2019.challenge
 
             return list;
         }
+
+        public static List<int> GetInputAsIntRow(int day)
+        {
+            List<int> list = new List<int>();
+
+            try
+            {
+                using (StreamReader sr = new StreamReader(GetPath(day)))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        sr.ReadLine().ToList().ForEach(i => list.Add(int.Parse(i.ToString())));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            return list;
+        }
     }
 }
