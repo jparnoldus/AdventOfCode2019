@@ -79,7 +79,6 @@ namespace AdventOfCode2019.challenge
                 }
             }
 
-            //2465411646
             return output.ToString();
         }
 
@@ -172,7 +171,6 @@ namespace AdventOfCode2019.challenge
                 }
             }
 
-            //2465411646
             return output.ToString();
         }
     }
