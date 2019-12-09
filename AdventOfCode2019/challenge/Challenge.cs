@@ -78,6 +78,28 @@ namespace AdventOfCode2019.challenge
             return list;
         }
 
+        public static List<List<long>> GetInputAsCsFloatListList(int day)
+        {
+            List<List<long>> list = new List<List<long>>();
+
+            try
+            {
+                using (StreamReader sr = new StreamReader(GetPath(day)))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        list.Add((from string item in sr.ReadLine().Split(',') select long.Parse(item)).ToList<long>());
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            return list;
+        }
+
         public static List<List<string>> GetInputAsCsStringListList(int day)
         {
             List<List<string>> list = new List<List<string>>();
