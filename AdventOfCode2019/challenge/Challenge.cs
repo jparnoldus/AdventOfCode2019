@@ -9,7 +9,7 @@ namespace AdventOfCode2019.challenge
     {
         protected static string GetPath(int day)
         {
-            return String.Format("{0}/day{1}.txt", Program.INPUT_FILE_DIR, day);
+            return String.Format("{0}/day{1}.txt", Program.INPUT_FILE_DIR, day.ToString().PadLeft(2, '0'));
         }
 
         public static List<string> GetInputAsStringList(int day)

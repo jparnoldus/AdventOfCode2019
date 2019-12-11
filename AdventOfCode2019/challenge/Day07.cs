@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace AdventOfCode2019.challenge
 {
-    class Day7 : Challenge
+    class Day07 : Challenge
     {
         public static string Solve1()
         {

@@ -2,7 +2,7 @@
 
 namespace AdventOfCode2019.challenge
 {
-    class Day1: Challenge
+    class Day01: Challenge
     {
         public static string Solve1()
         {

@@ -9,8 +9,8 @@ namespace AdventOfCode2019
 
         static void Main(string[] args)
         {
-            Console.WriteLine(Day11.Solve1());
-            Console.WriteLine(Day11.Solve2());
+            Console.WriteLine(Day12.Solve1());
+            Console.WriteLine(Day12.Solve2());
         }
     }
 }
