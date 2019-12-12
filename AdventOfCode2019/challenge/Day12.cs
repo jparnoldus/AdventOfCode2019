@@ -40,14 +40,77 @@ namespace AdventOfCode2019.challenge
                 moons.Add(new Moon(x, y, z));
             });
 
-            int n = 1;
-            while(!moons.All(m => m.orbitCompleted)) {
+            Dictionary<string, long> passedX = new Dictionary<string, long>();
+            Dictionary<string, long> passedY = new Dictionary<string, long>();
+            Dictionary<string, long> passedZ = new Dictionary<string, long>();
+
+            long n = 0;
+            string hash = null;
+
+            hash = string.Join(":", moons.Select(m => m.position.x + "." + m.velocity.x).ToList());
+            passedX.Add(hash, n);
+            hash = string.Join(":", moons.Select(m => m.position.y + "." + m.velocity.y).ToList());
+            passedY.Add(hash, n);
+            hash = string.Join(":", moons.Select(m => m.position.z + "." + m.velocity.z).ToList());
+            passedZ.Add(hash, n);
+
+            List<long> conditions = new List<long> { -1, -1, -1 };
+            while (conditions.Any(c => c == -1)) {
                 moons.ForEach(m => m.SetNewVelocity(moons));
                 moons.ForEach(m => m.Step());
                 n++;
+
+                hash = string.Join(":", moons.Select(m => m.position.x + "." + m.velocity.x).ToList());
+                if (!passedX.ContainsKey(hash) && conditions[0] == -1) passedX.Add(hash, n); 
+                else conditions[0] = n - passedX[hash];
+                hash = string.Join(":", moons.Select(m => m.position.y + "." + m.velocity.y).ToList());
+                if (!passedY.ContainsKey(hash) && conditions[1] == -1) passedY.Add(hash, n); 
+                else conditions[1] = n - passedY[hash];
+                hash = string.Join(":", moons.Select(m => m.position.z + "." + m.velocity.z).ToList());
+                if (!passedZ.ContainsKey(hash) && conditions[2] == -1) passedZ.Add(hash, n); 
+                else conditions[2] = n - passedZ[hash];
             }
 
-            return moons.Select(m => m.orbit.Count).Aggregate(1, (x, y) => x * y).ToString();
+            return LCM(conditions.ToArray()).ToString();
+        }
+
+        // Unapologetically ripped this from the internet ;)
+        public static long LCM(long[] conditions)
+        {
+            long lcm = 1;
+            int divisor = 2;
+
+            int counter = 0;
+            do
+            {
+                counter = 0;
+                bool divisible = false;
+                for (int i = 0; i < conditions.Length; i++)
+                {
+                    if (conditions[i] == 0)
+                    {
+                        return 0;
+                    }
+                    else if (conditions[i] < 0)
+                    {
+                        conditions[i] = conditions[i] * (-1);
+                    }
+                    if (conditions[i] == 1)
+                    {
+                        counter++;
+                    }
+
+                    if (conditions[i] % divisor == 0)
+                    {
+                        divisible = true;
+                        conditions[i] = conditions[i] / divisor;
+                    }
+                }
+
+                if (divisible) lcm *= divisor;
+                else divisor++;
+            } while (counter != conditions.Length);
+            return lcm;
         }
 
         public class Moon
@@ -104,10 +167,11 @@ namespace AdventOfCode2019.challenge
 
             public Moon Clone()
             {
-                Moon clone = new Moon(0,0,0);
-                clone.position = this.position.Clone();
-                clone.velocity = this.velocity.Clone();
-                return clone;
+                return new Moon(0, 0, 0)
+                {
+                    position = this.position.Clone(),
+                    velocity = this.velocity.Clone()
+                };
             }
         }
 
@@ -143,13 +207,12 @@ namespace AdventOfCode2019.challenge
 
             public override int GetHashCode()
             {
-                return (this.x.ToString() + this.y.ToString(), this.z.ToString()).GetHashCode();
+                return (this.x.ToString() + "." + this.y.ToString() + "." + this.z.ToString()).GetHashCode();
             }
 
             public override bool Equals(object obj)
             {
-                Point other = obj as Point;
-                return other != null && (other.x == this.x && other.y == this.y && other.z == this.z);
+                return obj is Point other && (other.x == this.x && other.y == this.y && other.z == this.z);
             }
         }
     }
