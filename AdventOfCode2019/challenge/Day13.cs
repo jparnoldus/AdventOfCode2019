@@ -138,6 +138,11 @@ namespace AdventOfCode2019.challenge
                 this.tileId = tileId;
             }
 
+            public Point Clone()
+            {
+                return new Point(this.x, this.y, this.tileId);
+            }
+
             public override int GetHashCode()
             {
                 return (this.x.ToString() + "." + this.y.ToString()).GetHashCode();
@@ -160,7 +165,9 @@ namespace AdventOfCode2019.challenge
             long relativeBase = 0;
             bool mapBuilt = false;
             List<Point> map = new List<Point>();
-            for (long offset = 0; commands[(int)offset] != 99;)
+            List<(List<Point> map, List<long> commands, long offset, long relativeBase)> history = new List<(List<Point> map, List<long> commands, long offset, long relativeBase)>();
+            long offset = 0;
+            while (true)
             {
                 string instruction = commands[(int)offset].ToString().PadLeft(5, '0');
                 char firstMode = instruction[2];
@@ -170,6 +177,14 @@ namespace AdventOfCode2019.challenge
 
                 switch (opcode)
                 {
+                    case 99:
+                        var lastState = history.Last();
+                        offset = lastState.offset;
+                        commands = lastState.commands;
+                        map = lastState.map;
+                        relativeBase = lastState.relativeBase;
+                        history.Remove(lastState);
+                        continue;
                     case 1:
                         if (thirdMode == '0')
                             commands[(int)commands[(int)(offset + 3)]] = GetParameter(commands, offset + 1, firstMode, relativeBase) + GetParameter(commands, offset + 2, secondMode, relativeBase);
@@ -194,27 +209,52 @@ namespace AdventOfCode2019.challenge
                             }
                         }
 
+                        Console.Clear();
                         for (int y = 0; y < map.Max(t => t.y); y++)
                         {
                             for (int x = 0; x < map.Max(t => t.x) + 1; x++)
                             {
-                                Console.Write(map.First(t => t.Equals(new Point(x, y, 0))).tileId);
+                                long tile = map.First(t => t.Equals(new Point(x, y, 0))).tileId;
+                                if (tile == 0) Console.Write('-');
+                                if (tile == 1) Console.Write('|');
+                                if (tile == 2) Console.Write('N');
+                                if (tile == 3) Console.Write('M');
+                                if (tile == 4) Console.Write('O');
                             }
                             Console.WriteLine();
                         }
                         Console.WriteLine(map.First(p => p.Equals(new Point(-1, 0, 0))).tileId);
 
                         string line = Console.ReadLine();
-                        if (line != "")
-                            input = int.Parse(Console.ReadLine());
-                        else
+                        if (line == "b")
+                        {
+                            lastState = history.Last();
+                            offset = lastState.offset;
+                            commands = lastState.commands;
+                            map = lastState.map;
+                            relativeBase = lastState.relativeBase;
+                            history.Remove(lastState);
+                            continue;
+                        }
+
+                        List<Point> mapClone = map.Select(p => p.Clone()).ToList();
+                        List<long> commandsClone = commands.Select(p => p).ToList();
+                        history.Add((mapClone, commandsClone, offset, relativeBase));
+
+                        if (line != "") {
+                            if (line == "a")
+                                input = -1;
+                            else if (line == "d")
+                                input = 1;
+                            else input = 0;
+                        } else
                             input = 0;
                         if (firstMode == '0')
                             commands[(int)commands[(int)(offset + 1)]] = input;
                         else if (firstMode == '2')
                             commands[(int)commands[(int)(offset + 1)] + (int)relativeBase] = input;
                         offset += 2;
-                        Console.WriteLine("------------------------------");
+                        Console.WriteLine();
                         break;
                     case 4:
                         if (!mapBuilt)
@@ -258,8 +298,6 @@ namespace AdventOfCode2019.challenge
                         break;
                 }
             }
-
-            return "";
         }
     }
 }
