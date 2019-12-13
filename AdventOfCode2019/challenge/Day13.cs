@@ -79,6 +79,7 @@ namespace AdventOfCode2019.challenge
                         offset += 4;
                         break;
                     case 8:
+
                         if (thirdMode == '0')
                             commands[(int)commands[(int)(offset + 3)]] = GetParameter(commands, offset + 1, firstMode, relativeBase) == GetParameter(commands, offset + 2, secondMode, relativeBase) ? 1 : 0;
                         else if (thirdMode == '2')
@@ -152,41 +153,14 @@ namespace AdventOfCode2019.challenge
         {
             List<long> commands = GetInputAsCsFloatListList(13).First();
             commands.AddRange(Enumerable.Repeat((long)0, 99999));
-            List<Point> map = BuildMap(commands);
-
-            for (int y = 0; y < map.Max(t => t.y); y++)
-            {
-                for (int x = 0; x < map.Max(t => t.x) + 1; x++)
-                {
-                    Console.Write(map.First(t => t.Equals(new Point(x, y, 0))).tileId);
-                }
-                Console.WriteLine();
-            }
-            Console.WriteLine();
-
-            map.Add(new Point(-1, 0, 0));
-
             commands[0] = 2;
-            var output = Step(commands, 1);
-            output.map.ForEach(p => map.First(c => c.Equals(p)).tileId = p.tileId);
-
-            for (int y = 0; y < map.Max(t => t.y); y++)
-            {
-                for (int x = 0; x < map.Max(t => t.x) + 1; x++)
-                {
-                    Console.Write(map.First(t => t.Equals(new Point(x, y, 0))).tileId);
-                }
-                Console.WriteLine();
-            }
-            Console.WriteLine();
-
-            return "";
-        }
-
-        private static (List<Point> map, List<long> commands) Step(List<long> commands, long offset, long relativeBase, int input) 
-        {
             List<long> output = new List<long>();
-            while(true)
+            List<long> temp = new List<long>();
+            long input = 0;
+            long relativeBase = 0;
+            bool mapBuilt = false;
+            List<Point> map = new List<Point>();
+            for (long offset = 0; commands[(int)offset] != 99;)
             {
                 string instruction = commands[(int)offset].ToString().PadLeft(5, '0');
                 char firstMode = instruction[2];
@@ -211,14 +185,51 @@ namespace AdventOfCode2019.challenge
                         offset += 4;
                         break;
                     case 3:
+                        if (!mapBuilt)
+                        {
+                            mapBuilt = true;
+                            for (int i = 0; i < output.Count; i += 3)
+                            {
+                                map.Add(new Point(output[i], output[i + 1], output[i + 2]));
+                            }
+                        }
+
+                        for (int y = 0; y < map.Max(t => t.y); y++)
+                        {
+                            for (int x = 0; x < map.Max(t => t.x) + 1; x++)
+                            {
+                                Console.Write(map.First(t => t.Equals(new Point(x, y, 0))).tileId);
+                            }
+                            Console.WriteLine();
+                        }
+                        Console.WriteLine(map.First(p => p.Equals(new Point(-1, 0, 0))).tileId);
+
+                        string line = Console.ReadLine();
+                        if (line != "")
+                            input = int.Parse(Console.ReadLine());
+                        else
+                            input = 0;
                         if (firstMode == '0')
                             commands[(int)commands[(int)(offset + 1)]] = input;
                         else if (firstMode == '2')
                             commands[(int)commands[(int)(offset + 1)] + (int)relativeBase] = input;
                         offset += 2;
+                        Console.WriteLine("------------------------------");
                         break;
                     case 4:
-                        output.Add(GetParameter(commands, offset + 1, firstMode, relativeBase));
+                        if (!mapBuilt)
+                        {
+                            output.Add(GetParameter(commands, offset + 1, firstMode, relativeBase));
+                        }
+                        else 
+                        {
+                            temp.Add(GetParameter(commands, offset + 1, firstMode, relativeBase));
+                            if (temp.Count == 3) 
+                            {
+                                map.First(p => p.Equals(new Point(temp[0], temp[1], 0))).tileId = temp[2];
+                                temp.Clear();
+                            }
+                        }
                         offset += 2;
                         break;
                     case 5:
@@ -248,13 +259,7 @@ namespace AdventOfCode2019.challenge
                 }
             }
 
-            List<Point> map = new List<Point>();
-            for (int i = 0; i < output.Count; i += 3)
-            {
-                map.Add(new Point(output[i], output[i + 1], output[i + 2]));
-            }
-
-            return (map, commands);
+            return "";
         }
     }
 }
